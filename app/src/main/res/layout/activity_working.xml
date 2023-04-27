@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WorkingActivity"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_weight = "2"
+        android:orientation="horizontal"
+        >
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1.5"
+            android:gravity="center_horizontal"
+
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/logo"
+                android:gravity="center"
+
+                >
+            </TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "0.5"
+            android:gravity="center_horizontal"
+            >
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/baseline_logout_24"
+                android:gravity="right"
+                android:paddingLeft="30dp"></Button>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_weight = "2"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:background="@color/white"
+
+                android:id="@+id/livingtext"
+                android:textAlignment="center"
+                android:text="Living Room">
+            </TextView>
+
+            <Button
+                android:id="@+id/living_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:drawableLeft="@drawable/noun_living_3664293"
+                android:gravity="center"
+                android:paddingLeft="30dp"></Button>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:background="@color/white"
+
+                android:id="@+id/bedroomtext"
+                android:textAlignment="center"
+                android:text="Bedroom">
+            </TextView>
+            <Button
+                android:id="@+id/bedroom_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/noun_bedroom_1122147"
+                android:gravity="center"
+                android:background="@color/white"
+                android:paddingLeft="30dp"
+                >
+            </Button>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:background="@color/white"
+
+                android:id="@+id/workingtext"
+                android:textAlignment="center"
+                android:text="Working Room">
+            </TextView>
+            <Button
+                android:id="@+id/working_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/noun_office_room_2366271"
+                android:gravity="center"
+                android:background="@color/white"
+                android:paddingLeft="30dp">
+            </Button>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_weight = "2"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/Temperature"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text = "Temp"
+                android:textSize = "20dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="15dp"
+                android:drawableLeft="@drawable/baseline_device_thermostat_24"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/Humidity"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:drawableLeft="@drawable/baseline_water_drop_24"
+                android:gravity="center"
+                android:text="Humi"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/light"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text = "Light"
+                android:textSize = "20dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="15dp"
+                android:drawableLeft="@drawable/baseline_light_mode_24"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_weight = "2"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/workingschedule"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text = "Working Schedule"
+                android:textSize = "15dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="15dp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:id="@+id/AssignSession"
+                android:text="Assign Session"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text = "Start Session"
+                android:textSize = "20dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="15dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_weight = "2"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text = "Device Schedule"
+                android:textSize = "20dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="15dp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="Assign Device"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text = " "
+                android:textSize = "20dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="15dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_weight = "1.5"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <TextView
+            android:id="@+id/motionview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Motion sensor"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:id="@+id/motiondetect"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/motionview"
+            android:text="Detected"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:textColor="#CC0033"/>
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "0dp"
+        android:layout_weight = "1"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1">
+
+            <Button
+                android:id="@+id/home_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/baseline_home_40"
+                android:gravity="center"
+                android:background="@color/white"
+                android:paddingLeft="30dp"
+                >
+            </Button>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1">
+            <Button
+                android:id="@+id/notification_person"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:drawableLeft="@drawable/baseline_person_24"
+                android:gravity="center"
+                android:paddingLeft="30dp"></Button>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1">
+
+            <Button
+                android:id="@+id/notification_button"
+                android:layout_width="114dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:drawableLeft="@drawable/baseline_notifications_24"
+                android:gravity="center"
+                android:paddingLeft="30dp"></Button>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1">
+            <Button
+                android:id="@+id/setting_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/baseline_settings_24"
+                android:gravity="center"
+                android:background="@color/white"
+                android:paddingLeft="30dp"
+                >
+            </Button>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

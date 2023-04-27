@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DemoAndroid</string>
+    <string name="main_page_select">%s page is select</string>
+    <string name="select">Device</string>
+</resources>
