@@ -10,10 +10,11 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
 
-public class WebSocketManager extends WebSocketListener implements Serializable {
+public class WebSocketManager extends WebSocketListener {
     private WebSocket webSocket;
     private AppCompatActivityExtended activity;
-    private final String SOCKET_URL = "ws://192.168.1.223:8000/ws/test_FE_Home/";
+//    private final String SOCKET_URL = "ws://192.168.1.223:8000/ws/test_FE_Home/";
+    private final String SOCKET_URL = "ws://192.168.1.222:8000";
     // ----------------------------------- Init Function
     public WebSocketManager(AppCompatActivityExtended activity) {
         this.activity = activity;
@@ -39,6 +40,10 @@ public class WebSocketManager extends WebSocketListener implements Serializable 
             throw new RuntimeException(e);
         }
     }
+    public void sendMessage(JSONObject jsonObject) {
+        String jsonString = jsonObject.toString();
+        this.webSocket.send(jsonString);
+    }
     public void closeSocket() {
         webSocket.close(1000, null);
     }
@@ -59,7 +64,12 @@ public class WebSocketManager extends WebSocketListener implements Serializable 
             String messageType = jsonObject.optString("Type");
             switch (messageType) {
                 case "UpdateSenSor":
+                    Log.w("WebSocket", "UpdateSenSor Received");
                     this.activity.updateSensorValue(jsonObject);
+                    break;
+                case "DeviceTimerSchedule":
+                    Log.w("WebSocket", "DeviceTimerSchedule Received");
+                    this.activity.updateDeviceScheduleList(jsonObject);
                     break;
                 default: break;
             }

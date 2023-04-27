@@ -17,19 +17,15 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.nio.charset.Charset;
 
 public class MainActivity3 extends AppCompatActivityExtended {
-    MQTTHelper mqttHelper;
-
-
     TextView txtTemp,txtHumi,txtLight,tView,motion;
     SeekBar sBar;
     Button logout, tempgraph, humigraph, lightgraph, btnWorking;
-    DayNightSwitch btnLight ;
-    //DbTemp TempHelper;
-    //DbHumi HumiHelper;
+    DayNightSwitch btnLight;
     private WebSocketManager webSocketManager;
     private final int ID_HOME = 1;
     private final int ID_ACCOUNT = 2;
@@ -40,6 +36,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
         // ---------------- Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
+
         // ---------------- Create object to handle button
         motion = findViewById(R.id.motiondetect);
         txtTemp = findViewById(R.id.Temperature);
@@ -53,8 +50,6 @@ public class MainActivity3 extends AppCompatActivityExtended {
         humigraph = (Button) findViewById(R.id.humi_button);
         lightgraph = (Button) findViewById(R.id.light_button);
         btnWorking = (Button) findViewById(R.id.working_button);
-        // HumiHelper = new DbHumi(this);
-        // TempHelper = new DbTemp(this);
 
         // ---------------- Receive Websocket object
         webSocketManager = new WebSocketManager(MainActivity3.this);
@@ -63,10 +58,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
         // ---------------- Init 4 sensor value
         this.initSensorValue();
 
-
-        // txtHumi.setText(String.valueOf(HumiHelper.getLastYValue())+"%");
-        // txtTemp.setText(String.valueOf(TempHelper.getLastYValue()) + "°C");
-        //Set up Bottom Bar
+        // ---------------- Set up Bottom Bar
         MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_HOME,R.drawable.baseline_home_40));
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
@@ -109,26 +101,66 @@ public class MainActivity3 extends AppCompatActivityExtended {
         //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
         bottomNavigation.setCount(ID_NOTE,"4");
         bottomNavigation.show(ID_HOME,true);
+
+        // ---------------- Set up Listener
+        btnLight.setOnToggledListener(new OnToggledListener() {
+            @Override
+            public void onSwitched(ToggleableView toggleableView, boolean isOn) {
+                int lightDeviceValue;
+                if (isOn) {
+                    lightDeviceValue = 1;
+                } else {
+                    lightDeviceValue = 0;
+                }
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestDeviceControl");
+                    jsonObject.put("Device", "Light");
+                    jsonObject.put("Value", lightDeviceValue);
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int pval = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                pval = progress;
+                if (progress >= 0 && progress < 10) {
+                    seekBar.setProgress(0);
+                } else if (progress >= 10 && progress < 30) {
+                    seekBar.setProgress(20);
+                } else if (progress >= 30 && progress < 50) {
+                    seekBar.setProgress(40);
+                } else if (progress >= 50 && progress < 70) {
+                    seekBar.setProgress(60);
+                } else if (progress >= 70 && progress < 90) {
+                    seekBar.setProgress(80);
+                } else {
+                    seekBar.setProgress(100);
+                }
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 //write custom code to on start progress
-
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                tView.setText(pval + "/" + seekBar.getMax());
-                String s = Integer.toString(pval);
-                sendDataMQTT("LamVinh/feeds/fan\n",s);
-
+                //write custom code to on stop using seekBar
+                int pval = seekBar.getProgress();
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestDeviceControl");
+                    jsonObject.put("Device", "Fan");
+                    jsonObject.put("Value", pval);
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
-        //Quay ve trang dang nhap
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,89 +192,12 @@ public class MainActivity3 extends AppCompatActivityExtended {
 //                LightGraph();
 //            }
 //        });
-        btnLight.setOnToggledListener(new OnToggledListener() {
-            @Override
-            public void onSwitched(ToggleableView toggleableView, boolean isOn) {
-                if(isOn == true){
-                    sendDataMQTT("LamVinh/feeds/button1\n", "1");
-                }
-                else{
-                    sendDataMQTT("LamVinh/feeds/button1\n", "0");
-                }
-            }
-        });
-        // Now using websocket, so we comment out MQTT
-        // startMQTT();
-    }
-    public void sendDataMQTT(String topic, String value){
-        MqttMessage msg = new MqttMessage();
-        msg.setId(1234);
-        msg.setQos(0);
-        msg.setRetained(false);
-        byte[] b = value.getBytes(Charset.forName("UTF-8"));
-        msg.setPayload(b);
-
-        try {
-            mqttHelper.mqttAndroidClient.publish(topic, msg);
-        }catch (MqttException e){
-        }
-    }
-
-    public void startMQTT(){
-
-        mqttHelper = new MQTTHelper(this    );
-        mqttHelper.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
-
-            }
-
-            @Override
-            public void connectionLost(Throwable cause) {
-
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.d("TEST",topic + "---" + message.toString());
-
-                if(topic.contains("humi-info")){
-                    txtHumi.setText(message.toString()+"  %");
-                }
-                else if(topic.contains("temp-info")){
-                    txtTemp.setText(message.toString()+"  °C");
-                }
-                else if(topic.contains("light2")){
-                    txtLight.setText(message.toString()+"   lux");
-                }
-                else if(topic.contains("motion")){
-                    if(message.toString().equals("1")){
-                        motion.setText("Detected");
-                    }
-                    else
-                        motion.setText("None");
-
-                }
-                else if(topic.contains("button1")){
-                    if(message.toString().equals("1")){
-                        btnLight.setOn(true);
-                    }
-                    else btnLight.setOn(false);
-                }
-                else if(topic.contains("fan")){
-                    sBar.setProgress(Integer.parseInt(message.toString()));
-                    tView.setText((message.toString())+"/" + sBar.getMax());
-                }
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
     }
 
     //  ---------------- Addition Method
+    public void sendMessage(JSONObject jsonObject) {
+        this.webSocketManager.sendMessage(jsonObject);
+    }
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
