@@ -33,6 +33,7 @@
             android:exported="false" />
         <activity android:name=".WorkingActivity" />
         <activity android:name=".WorkingScheduleActivity" />
+        <activity android:name=".DeviceScheduleActivity" />
         <activity android:name=".WorkingSessionActivity" />
         <activity
             android:name=".MainActivity"
