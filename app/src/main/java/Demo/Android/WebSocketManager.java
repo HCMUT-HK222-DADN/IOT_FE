@@ -14,7 +14,7 @@ public class WebSocketManager extends WebSocketListener {
     private WebSocket webSocket;
     private AppCompatActivityExtended activity;
 //    private final String SOCKET_URL = "ws://192.168.1.223:8000/ws/test_FE_Home/";
-    private final String SOCKET_URL = "ws://192.168.1.222:8000";
+    private final String SOCKET_URL = "ws://192.168.1.33:8000";
     // ----------------------------------- Init Function
     public WebSocketManager(AppCompatActivityExtended activity) {
         this.activity = activity;
