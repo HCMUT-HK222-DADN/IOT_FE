@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceScheduleActivity extends AppCompatActivityExtended {
-    Button logout, startSchedule;
+    Button logout, startDevice, addDevice, deleteDevice;
     ListView list_view;
     List<DeviceScheduleData> dataList;
     DeviceScheduleAdapter adapter;
@@ -31,10 +31,12 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
     protected void onCreate(Bundle savedInstanceState) {
         // ---------------- Init
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_workingschedule);
+        setContentView(R.layout.activity_devicesched);
         // ---------------- Create object to handle button
         logout = (Button) findViewById(R.id.logout);
-        startSchedule = findViewById(R.id.startSchedule);
+        startDevice = findViewById(R.id.startDevice);
+        addDevice = findViewById(R.id.addDevice);
+        deleteDevice = findViewById(R.id.deleteDevice);
         list_view = findViewById(R.id.list_view);
 
         // ---------------- Create Websocket
@@ -63,13 +65,18 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
                 LogOut();
             }
         });
-        startSchedule.setOnClickListener(new View.OnClickListener() {
+        startDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoWorkingSession();
+
             }
         });
-
+        addDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoAssignDevice();
+            }
+        });
         bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener(){
             @Override
             public void onClickItem(MeowBottomNavigation.Model item){
@@ -133,8 +140,17 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
             }
         });
     }
+    public void sendMessage(JSONObject jsonObject) {
+        this.webSocketManager.sendMessage(jsonObject);
+    }
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoAssignDevice() {
+        Intent intent = new Intent(this, AssignDevice.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();

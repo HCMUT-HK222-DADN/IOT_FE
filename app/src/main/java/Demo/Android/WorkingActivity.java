@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 
 public class WorkingActivity extends AppCompatActivityExtended {
     TextView txtTemp, txtHumi, txtLight, motion,AssignSession;
-    Button logout, workingschedule, deviceschedule;
+    Button logout, workingschedule, deviceschedule, deviceassign;
     private WebSocketManager webSocketManager;
 
     @Override
@@ -35,6 +35,7 @@ public class WorkingActivity extends AppCompatActivityExtended {
         logout = (Button) findViewById(R.id.logout);
         workingschedule = findViewById(R.id.workingschedule);
         deviceschedule = findViewById(R.id.deviceschedule);
+        deviceassign = findViewById(R.id.deviceassign);
 
         // ---------------- Create Websocket
         webSocketManager = new WebSocketManager(WorkingActivity.this);
@@ -62,6 +63,12 @@ public class WorkingActivity extends AppCompatActivityExtended {
                 gotoDeviceSchedule();
             }
         });
+        deviceassign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoAssignDevice();
+            }
+        });
         AssignSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +90,12 @@ public class WorkingActivity extends AppCompatActivityExtended {
     }
     public void gotoDeviceSchedule() {
         Intent intent = new Intent(this, DeviceScheduleActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoAssignDevice() {
+        Intent intent = new Intent(this, AssignDevice.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
