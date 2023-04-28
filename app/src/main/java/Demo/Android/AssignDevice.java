@@ -172,6 +172,8 @@ public class AssignDevice extends AppCompatActivityExtended  {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedValue = adapterView.getItemAtPosition(position).toString();
+                if (selectedValue == "On") selectedValue = "1";
+                else if (selectedValue == "Off") selectedValue = "0";
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
@@ -231,6 +233,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                selectedDatetime = selectedDate + " " + selectedTime;
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("Type", "RequestDeviceTimerBook");
@@ -241,6 +244,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+                current();
             }
         });
         // Logout to first page
@@ -274,6 +278,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
                 hour = selectHour;
                 minute = selectMin;
                 timeset.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                selectedTime = makeSelectedTime(hour, minute);
             }
         };
         int style = AlertDialog.THEME_HOLO_LIGHT;
@@ -303,7 +308,10 @@ public class AssignDevice extends AppCompatActivityExtended  {
         return day +" / "+  getMonthFormat(month)+ " / " + year;
     }
     private String makeSelectedDate(int day, int month, int year) {
-        return year + "-" + month + "-" + day;
+        return String.format("%d-%02d-%02d", year, month, day);
+    }
+    private String makeSelectedTime(int hour, int minute) {
+        return String.format("%02d:%02d:%02d", hour, minute, 0);
     }
     private String getMonthFormat(int month) {
         if(month == 1) return "thg 1";
@@ -339,7 +347,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
         finish();
     }
     public void current() {
-        Intent intent = new Intent(this, AssignSession.class);
+        Intent intent = new Intent(this, AssignDevice.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();

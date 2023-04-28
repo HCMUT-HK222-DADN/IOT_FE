@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -17,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceScheduleActivity extends AppCompatActivityExtended {
-    Button logout, startDevice, addDevice, deleteDevice;
+    Button logout, addDevice, deleteDevice;
     ListView list_view;
     List<DeviceScheduleData> dataList;
+    DeviceScheduleData selectedItem;
+    private int selectedPosition;
     DeviceScheduleAdapter adapter;
     MeowBottomNavigation bottomNavigation;
     private WebSocketManager webSocketManager;
@@ -34,7 +37,6 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
         setContentView(R.layout.activity_devicesched);
         // ---------------- Create object to handle button
         logout = (Button) findViewById(R.id.logout);
-        startDevice = findViewById(R.id.startDevice);
         addDevice = findViewById(R.id.addDevice);
         deleteDevice = findViewById(R.id.deleteDevice);
         list_view = findViewById(R.id.list_view);
@@ -65,16 +67,42 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
                 LogOut();
             }
         });
-        startDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         addDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 gotoAssignDevice();
+            }
+        });
+        deleteDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestDeviceTimerDelete");
+                    jsonObject.put("Position", selectedPosition);
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                current();
+            }
+        });
+        list_view.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedItem = adapter.getItem(position);
+                selectedPosition = position;
+                Log.w("DeviceScheduleActivity", "The position is: " + String.valueOf(selectedPosition));
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedItem = adapter.getItem(position);
+                selectedPosition = position;
+                Log.w("DeviceScheduleActivity", "The position is: " + String.valueOf(selectedPosition));
             }
         });
         bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener(){
@@ -157,6 +185,12 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
     }
     public void gotoWorkingSession() {
         Intent intent = new Intent(this, WorkingSessionActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void current() {
+        Intent intent = new Intent(this, DeviceScheduleActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
