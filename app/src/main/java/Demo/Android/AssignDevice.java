@@ -23,6 +23,9 @@ import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,54 +33,48 @@ import java.util.Date;
 import java.util.Locale;
 
 public class AssignDevice extends AppCompatActivityExtended  {
-    Button timeset,dateset,logout;
+    Button timeset, dateset, logout, set;
     private WebSocketManager webSocketManager;
     private DatePickerDialog datePickerDialog;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    String[] itemDevice ={"Light Button","Fan","Gate"};
-    String[] ValueFan ={"0","20","40","60","80","100"};
-    String[] ValueButton ={"On","Off"};
+    String[] itemDevice = {"Light", "Fan"};
+    String[] ValueFan = {"0", "20", "40", "60", "80", "100"};
+    String[] ValueButton = {"On", "Off"};
+    String[] valueDevice = {};
+    String selectedDevice, selectedValue;
+    String selectedDatetime, selectedDate, selectedTime;
 
-    Spinner Device,DeviceValue,DeviceId;
-    ArrayAdapter<String> adapterItemDevice,adapterValue;
+    Spinner Device, DeviceValue, DeviceId;
+    ArrayAdapter<String> adapterItemDevice, adapterValue;
     int hour,minute;
     private final int ID_HOME = 1;
     private final int ID_ACCOUNT = 2;
     private final int ID_NOTE = 3;
     private final int ID_SETTING = 4;
-    private int RestTimeSet = 300;//Count by seconds
+    private int RestTimeSet = 300; //Count by seconds
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        // ---------------- Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deviceschedule);
 
-        //Init web socket??
+        // ----------------  object to handle button
+        Device = findViewById(R.id.DeviceDrop);
+        DeviceValue = findViewById(R.id.ValueDeviceDrop);
+        set = findViewById(R.id.set);
+
+        // ---------------- Init web socket
         webSocketManager = new WebSocketManager(AssignDevice.this);
         webSocketManager.start();
 
-        Device = findViewById(R.id.DeviceDrop);
-        DeviceValue = findViewById(R.id.ValueDeviceDrop);
-
+        // ---------------- Init UI
         adapterItemDevice = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, itemDevice);
         adapterItemDevice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Device.setAdapter(adapterItemDevice);
-        Device.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position==0 || position == 2){
-                    adapterValue = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,ValueButton);
-                }
-                if(position==1){
-                    adapterValue = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,ValueFan);
-                }
-                DeviceValue.setAdapter(adapterValue);
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        adapterValue = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, valueDevice);
+        adapterValue.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        DeviceValue.setAdapter(adapterValue);
 
         dateset  = findViewById(R.id.DateSetup);
         timeset  = findViewById(R.id.TimeSetup);
@@ -97,64 +94,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
         initDatePicker();
         dateset.setText(getToday());
 
-
-        // Set up Show/Hide Rest Interval
-        RestTimeSet = 300;
-        suggestion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int hideflag = show_hide.getVisibility();
-
-                if(hideflag == View.VISIBLE){
-                    show_hide.setVisibility(View.GONE);
-                    RestTimeSet = 300;
-                    int min = RestTimeSet/60;
-                    int second = RestTimeSet%60;
-                    restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                    rest.setText("Rest Time (Default):");
-                    suggestion.setText("Click here to view more Suggestion");
-
-                }
-                else {
-                    suggestion.setText("Close suggestion");
-                    show_hide.setVisibility(View.VISIBLE);
-
-
-                }
-            }
-
-        });
-        b10min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RestTimeSet = 600;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
-            }
-        });
-        b15min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RestTimeSet = 900;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
-            }
-        });
-        b20min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RestTimeSet = 1200;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
-            }
-        });
-        //Set up Bottom Bar
+        // ---------------- Set up Bottom Bar
         MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_HOME,R.drawable.baseline_home_40));
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
@@ -194,19 +134,123 @@ public class AssignDevice extends AppCompatActivityExtended  {
                 }
             }
         });
-
-        //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
+        // Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
         bottomNavigation.setCount(ID_NOTE,"4");
         bottomNavigation.show(ID_SETTING,true);
 
-        //Logout
+        // ---------------- Init Listener
+        Device.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                // Update the Value rollbar according to the device rollbar
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if(position==0 || position == 2){
+//                            valueDevice = ValueButton.clone();
+//                        }
+//                        if(position==1){
+//                            valueDevice = ValueFan.clone();
+//                        }
+//                        adapterValue.notifyDataSetChanged();
+//                    }
+//                });
+                if(position==0 || position == 2){
+                    adapterValue = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,ValueButton);
+                }
+                if(position==1){
+                    adapterValue = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,ValueFan);
+                }
+                DeviceValue.setAdapter(adapterValue);
+                // Update the device type that being selected
+                selectedDevice = adapterView.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        DeviceValue.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedValue = adapterView.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        // Set up Show/Hide Rest Interval
+        RestTimeSet = 300;
+        suggestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int hideflag = show_hide.getVisibility();
+                if(hideflag == View.VISIBLE){
+                    show_hide.setVisibility(View.GONE);
+                    RestTimeSet = 300;
+                    int min = RestTimeSet/60;
+                    int second = RestTimeSet%60;
+                    restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
+                    rest.setText("Rest Time (Default):");
+                    suggestion.setText("Click here to view more Suggestion");
+
+                }
+                else {
+                    suggestion.setText("Close suggestion");
+                    show_hide.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        b10min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RestTimeSet = 600;
+                int min = RestTimeSet/60;
+                int second = RestTimeSet%60;
+                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
+                rest.setText("Rest Time (Chosen from suggest):");
+            }
+        });
+        b15min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RestTimeSet = 900;
+                int min = RestTimeSet/60;
+                int second = RestTimeSet%60;
+                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
+                rest.setText("Rest Time (Chosen from suggest):");
+            }
+        });
+        b20min.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RestTimeSet = 1200;
+                int min = RestTimeSet/60;
+                int second = RestTimeSet%60;
+                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
+                rest.setText("Rest Time (Chosen from suggest):");
+            }
+        });
+        set.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestDeviceTimerBook");
+                    jsonObject.put("Device", selectedDevice);
+                    jsonObject.put("Value", Integer.parseInt(selectedValue));
+                    jsonObject.put("TimeStart", selectedDatetime);
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        // Logout to first page
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LogOut();
             }
         });
-        //back to mainactivity
+        // Back to Working Activity
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,7 +258,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
             }
         });
     }
-
+    // ---------------- Addition Method
     public String getToday(){
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -223,7 +267,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
         month = month + 1 ;
         return makeDateString(day,month,year);
     }
-    public  void popTimePicker(View view){
+    public void popTimePicker(View view){
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectHour, int selectMin) {
@@ -236,15 +280,15 @@ public class AssignDevice extends AppCompatActivityExtended  {
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,style, onTimeSetListener,hour,minute,true);
         timePickerDialog.setTitle("Time Setup");
         timePickerDialog.show();
-
     }
-    public  void initDatePicker(){
-        DatePickerDialog.OnDateSetListener dateSetListener =new DatePickerDialog.OnDateSetListener() {
+    public void initDatePicker(){
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
-                String date = makeDateString(day,month,year);
+                String date = makeDateString(day, month, year);
                 dateset.setText(date);
+                selectedDate = makeSelectedDate(day, month, year);
             }
         };
         Calendar cal = Calendar.getInstance();
@@ -254,12 +298,13 @@ public class AssignDevice extends AppCompatActivityExtended  {
         int style = AlertDialog.THEME_HOLO_LIGHT;
 
         datePickerDialog = new DatePickerDialog(this,style,dateSetListener,year,month,day);
-
     }
-    private String makeDateString(int day,int month,int year){
+    private String makeDateString(int day, int month, int year) {
         return day +" / "+  getMonthFormat(month)+ " / " + year;
     }
-
+    private String makeSelectedDate(int day, int month, int year) {
+        return year + "-" + month + "-" + day;
+    }
     private String getMonthFormat(int month) {
         if(month == 1) return "thg 1";
         if(month == 2) return "thg 2";
@@ -275,9 +320,11 @@ public class AssignDevice extends AppCompatActivityExtended  {
         if(month == 12) return "thg 12";
         return "jan";
     }
-
     public void openDatePicker(View view){
         datePickerDialog.show();
+    }
+    public void sendMessage(JSONObject jsonObject) {
+        this.webSocketManager.sendMessage(jsonObject);
     }
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);

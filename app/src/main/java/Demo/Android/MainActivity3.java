@@ -96,8 +96,6 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 }
             }
         });
-
-
         //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
         bottomNavigation.setCount(ID_NOTE,"4");
         bottomNavigation.show(ID_HOME,true);
