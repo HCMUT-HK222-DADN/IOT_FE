@@ -104,6 +104,16 @@ public class AssignDevice extends AppCompatActivityExtended  {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item){
                 Toast.makeText(AssignDevice.this,"Click item : "+item.getId(),Toast.LENGTH_SHORT).show();
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
@@ -113,11 +123,9 @@ public class AssignDevice extends AppCompatActivityExtended  {
                 switch (item.getId()){
                     case ID_HOME:
                         name = "home";
-
                         break;
                     case ID_ACCOUNT:
                         name = "account";
-
                         break;
                     case ID_NOTE:
                         name = "notification";
@@ -125,11 +133,25 @@ public class AssignDevice extends AppCompatActivityExtended  {
                         break;
                     case ID_SETTING:
                         name = "setting";
-
                         break;
                     default:
                         name="Current";
                         current();
+                        break;
+                }
+            }
+        });
+        bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
+            @Override
+            public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -143,18 +165,6 @@ public class AssignDevice extends AppCompatActivityExtended  {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 // Update the Value rollbar according to the device rollbar
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if(position==0 || position == 2){
-//                            valueDevice = ValueButton.clone();
-//                        }
-//                        if(position==1){
-//                            valueDevice = ValueFan.clone();
-//                        }
-//                        adapterValue.notifyDataSetChanged();
-//                    }
-//                });
                 if(position==0 || position == 2){
                     adapterValue = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,ValueButton);
                 }
@@ -348,6 +358,18 @@ public class AssignDevice extends AppCompatActivityExtended  {
     }
     public void current() {
         Intent intent = new Intent(this, AssignDevice.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoMainActivity3() {
+        Intent intent = new Intent(this, MainActivity3.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoWorkingActivity() {
+        Intent intent = new Intent(this, WorkingActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();

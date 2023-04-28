@@ -87,16 +87,6 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
                 current();
             }
         });
-        list_view.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedItem = adapter.getItem(position);
-                selectedPosition = position;
-                Log.w("DeviceScheduleActivity", "The position is: " + String.valueOf(selectedPosition));
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
-        });
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -109,6 +99,16 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item){
                 Toast.makeText(DeviceScheduleActivity.this,"Click item : "+item.getId(),Toast.LENGTH_SHORT).show();
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
@@ -134,10 +134,24 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
                 }
             }
         });
-
+        bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
+            @Override
+            public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
         bottomNavigation.setCount(ID_NOTE,"4");
-        bottomNavigation.show(ID_HOME,true);
+        bottomNavigation.show(ID_SETTING,true);
     }
     //  ---------------- Addition Method
     public void updateDeviceScheduleList(JSONObject jsonObject) {
@@ -183,14 +197,20 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
         webSocketManager.closeSocket();
         finish();
     }
-    public void gotoWorkingSession() {
-        Intent intent = new Intent(this, WorkingSessionActivity.class);
+    public void gotoWorkingActivity() {
+        Intent intent = new Intent(this, WorkingActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
     }
     public void current() {
         Intent intent = new Intent(this, DeviceScheduleActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoMainActivity3() {
+        Intent intent = new Intent(this, MainActivity3.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
