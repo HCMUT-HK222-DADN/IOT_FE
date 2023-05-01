@@ -80,7 +80,6 @@ public class MainActivity3 extends AppCompatActivityExtended {
                         break;
                     case ID_ACCOUNT:
                         name = "account";
-
                         break;
                     case ID_NOTE:
                         name = "notification";
@@ -88,10 +87,24 @@ public class MainActivity3 extends AppCompatActivityExtended {
                     case ID_SETTING:
                         name = "setting";
                         moveToWorkingActivity();
-
                         break;
                     default:
                         name="";
+                        break;
+                }
+            }
+        });
+        bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
+            @Override
+            public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -249,5 +262,17 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 }
             }
         });
+    }
+    public void gotoMainActivity3() {
+        Intent intent = new Intent(this, MainActivity3.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoWorkingActivity() {
+        Intent intent = new Intent(this, WorkingActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
     }
 }

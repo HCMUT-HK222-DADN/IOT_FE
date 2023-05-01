@@ -72,8 +72,6 @@
                 android:id="@+id/living_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
-                android:background="#C6E2FF"
                 android:drawableLeft="@drawable/noun_living_3664293"
                 android:gravity="center"
                 android:paddingLeft="30dp"></Button>
@@ -100,7 +98,6 @@
                 android:layout_height="match_parent"
                 android:drawableLeft="@drawable/noun_bedroom_1122147"
                 android:gravity="center"
-                android:background="@color/white"
                 android:paddingLeft="30dp"
                 >
             </Button>
@@ -126,7 +123,6 @@
                 android:layout_height="match_parent"
                 android:drawableLeft="@drawable/noun_office_room_2366271"
                 android:gravity="center"
-                android:background="@color/white"
                 android:paddingLeft="30dp"
                 >
             </Button>
