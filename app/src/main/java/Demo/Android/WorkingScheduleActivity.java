@@ -20,6 +20,7 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
     Button logout, startSchedule;
     ListView list_view;
     private WebSocketManager webSocketManager;
+    MeowBottomNavigation bottomNavigation;
     private final int ID_HOME = 1;
     private final int ID_ACCOUNT = 2;
     private final int ID_NOTE = 3;
@@ -29,6 +30,8 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
         // ---------------- Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workingschedule);
+        Log.w("WorkingScheduleActivity", "into WorkingScheduleActivity");
+
         // ---------------- Create object to handle button
         logout = (Button) findViewById(R.id.logout);
         startSchedule = findViewById(R.id.startSchedule);
@@ -48,21 +51,8 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
         list_view.setAdapter(adapter);
         list_view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-
-        // ---------------- Init listener
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LogOut();
-            }
-        });
-        startSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoWorkingSession();
-            }
-        });
-        MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
+        // ---------------- Set up Bottom Bar
+        bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_HOME,R.drawable.baseline_home_40));
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_NOTE,R.drawable.baseline_notifications_24));
@@ -71,6 +61,16 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item){
                 Toast.makeText(WorkingScheduleActivity.this,"Click item : "+item.getId(),Toast.LENGTH_SHORT).show();
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
@@ -96,10 +96,41 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
                 }
             }
         });
-
+        bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
+            @Override
+            public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
         bottomNavigation.setCount(ID_NOTE,"4");
-        bottomNavigation.show(ID_HOME,true);
+        bottomNavigation.show(ID_SETTING,true);
+
+
+        // ---------------- Init listener
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LogOut();
+            }
+        });
+        startSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoWorkingSession();
+            }
+        });
+
+
     }
     //  ---------------- Addition Method
     public void LogOut() {
@@ -110,6 +141,18 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
     }
     public void gotoWorkingSession() {
         Intent intent = new Intent(this, WorkingSessionActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoMainActivity3() {
+        Intent intent = new Intent(this, MainActivity3.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoWorkingActivity() {
+        Intent intent = new Intent(this, WorkingActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();

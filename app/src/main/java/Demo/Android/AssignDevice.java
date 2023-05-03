@@ -37,7 +37,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
     private WebSocketManager webSocketManager;
     private DatePickerDialog datePickerDialog;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    String[] itemDevice = {"Light", "Fan"};
+    String[] itemDevice = {"Den", "Quat"};
     String[] ValueFan = {"0", "20", "40", "60", "80", "100"};
     String[] ValueButton = {"On", "Off"};
     String[] valueDevice = {};
@@ -129,7 +129,6 @@ public class AssignDevice extends AppCompatActivityExtended  {
                         break;
                     case ID_NOTE:
                         name = "notification";
-                        backtoWorkmain();
                         break;
                     case ID_SETTING:
                         name = "setting";
@@ -250,6 +249,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
                     jsonObject.put("Device", selectedDevice);
                     jsonObject.put("Value", Integer.parseInt(selectedValue));
                     jsonObject.put("TimeStart", selectedDatetime);
+                    jsonObject.put("UserID", 1);
                     sendMessage(jsonObject);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);

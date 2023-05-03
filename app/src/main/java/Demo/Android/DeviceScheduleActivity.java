@@ -51,50 +51,6 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_NOTE,R.drawable.baseline_notifications_24));
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_SETTING,R.drawable.baseline_settings_24));
-
-        // ---------------- Init View
-        dataList = new ArrayList<>();
-        dataList.add(new DeviceScheduleData("Fan", 20, "2023"));
-        adapter = new DeviceScheduleAdapter(this, dataList);
-        list_view.setAdapter(adapter);
-        list_view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        this.webSocketManager.sendMessage("RequestDeviceTimerSchedule");
-
-        // ---------------- Init listener
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LogOut();
-            }
-        });
-        addDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoAssignDevice();
-            }
-        });
-        deleteDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("Type", "RequestDeviceTimerDelete");
-                    jsonObject.put("Position", selectedPosition);
-                    sendMessage(jsonObject);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                current();
-            }
-        });
-        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedItem = adapter.getItem(position);
-                selectedPosition = position;
-                Log.w("DeviceScheduleActivity", "The position is: " + String.valueOf(selectedPosition));
-            }
-        });
         bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener(){
             @Override
             public void onClickItem(MeowBottomNavigation.Model item){
@@ -152,6 +108,60 @@ public class DeviceScheduleActivity extends AppCompatActivityExtended {
         //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
         bottomNavigation.setCount(ID_NOTE,"4");
         bottomNavigation.show(ID_SETTING,true);
+
+        // ---------------- Init View
+        dataList = new ArrayList<>();
+        dataList.add(new DeviceScheduleData("Quat", 20, "2023"));
+        adapter = new DeviceScheduleAdapter(this, dataList);
+        list_view.setAdapter(adapter);
+        list_view.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        // ---------------- Request the list from the server
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Type", "RequestDeviceTimerSchedule");
+            jsonObject.put("UserID", 1);
+            this.webSocketManager.sendMessage(jsonObject);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        // ---------------- Init listener
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LogOut();
+            }
+        });
+        addDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoAssignDevice();
+            }
+        });
+        deleteDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestDeviceTimerDelete");
+                    jsonObject.put("UserID", 1);
+                    jsonObject.put("Position", selectedPosition);
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                current();
+            }
+        });
+        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedItem = adapter.getItem(position);
+                selectedPosition = position;
+                Log.w("DeviceScheduleActivity", "The position is: " + String.valueOf(selectedPosition));
+            }
+        });
     }
     //  ---------------- Addition Method
     public void updateDeviceScheduleList(JSONObject jsonObject) {

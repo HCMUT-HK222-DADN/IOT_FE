@@ -40,12 +40,15 @@ public class AssignSession extends AppCompatActivityExtended  {
     private int RestTimeSet = 300;//Count by seconds
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        // ---------------- Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_session);
 
-        //Init web socket??
+        // ---------------- Create Websocket
         webSocketManager = new WebSocketManager(AssignSession.this);
         webSocketManager.start();
+
+        // ---------------- Init view
         dateset  = findViewById(R.id.DateSetup);
         timeset  = findViewById(R.id.TimeSetup);
         long instance = new Date().getTime();
@@ -64,8 +67,74 @@ public class AssignSession extends AppCompatActivityExtended  {
         initDatePicker();
         dateset.setText(getToday());
 
+        // ---------------- Set up Bottom Bar
+        MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_HOME,R.drawable.baseline_home_40));
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_NOTE,R.drawable.baseline_notifications_24));
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_SETTING,R.drawable.baseline_settings_24));
+        bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener(){
+            @Override
+            public void onClickItem(MeowBottomNavigation.Model item){
+                Toast.makeText(AssignSession.this,"Click item : "+item.getId(),Toast.LENGTH_SHORT).show();
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
+            @Override
+            public void onShowItem(MeowBottomNavigation.Model item) {
+                String name;
+                switch (item.getId()){
+                    case ID_HOME:
+                        name = "home";
+                        break;
+                    case ID_ACCOUNT:
+                        name = "account";
+                        break;
+                    case ID_NOTE:
+                        name = "notification";
+                        break;
+                    case ID_SETTING:
+                        name = "setting";
+                        break;
+                    default:
+                        name="Current";
+                        current();
+                        break;
+                }
+            }
+        });
+        bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
+            @Override
+            public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
+        bottomNavigation.setCount(ID_NOTE,"4");
+        bottomNavigation.show(ID_SETTING,true);
 
-        // Set up Show/Hide Rest Interval
+
+
+        // ---------------- Set up Show/Hide Rest Interval
         RestTimeSet = 300;
         suggestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,59 +190,15 @@ public class AssignSession extends AppCompatActivityExtended  {
                 rest.setText("Rest Time (Chosen from suggest):");
             }
         });
-        //Set up Bottom Bar
-        MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
-        bottomNavigation.add(new MeowBottomNavigation.Model(ID_HOME,R.drawable.baseline_home_40));
-        bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
-        bottomNavigation.add(new MeowBottomNavigation.Model(ID_NOTE,R.drawable.baseline_notifications_24));
-        bottomNavigation.add(new MeowBottomNavigation.Model(ID_SETTING,R.drawable.baseline_settings_24));
-        bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener(){
-            @Override
-            public void onClickItem(MeowBottomNavigation.Model item){
-                Toast.makeText(AssignSession.this,"Click item : "+item.getId(),Toast.LENGTH_SHORT).show();
-            }
-        });
-        bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
-            @Override
-            public void onShowItem(MeowBottomNavigation.Model item) {
-                String name;
-                switch (item.getId()){
-                    case ID_HOME:
-                        name = "home";
 
-                        break;
-                    case ID_ACCOUNT:
-                        name = "account";
 
-                        break;
-                    case ID_NOTE:
-                        name = "notification";
-                        backtoWorkmain();
-                        break;
-                    case ID_SETTING:
-                        name = "setting";
-
-                        break;
-                    default:
-                        name="Current";
-                        current();
-                        break;
-                }
-            }
-        });
-
-        //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
-        bottomNavigation.setCount(ID_NOTE,"4");
-        bottomNavigation.show(ID_SETTING,true);
-
-        //Logout
+        // ---------------- Init listener
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LogOut();
             }
         });
-        //back to mainactivity
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -260,6 +285,18 @@ public class AssignSession extends AppCompatActivityExtended  {
     }
     public void current() {
         Intent intent = new Intent(this, AssignSession.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoMainActivity3() {
+        Intent intent = new Intent(this, MainActivity3.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoWorkingActivity() {
+        Intent intent = new Intent(this, WorkingActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();

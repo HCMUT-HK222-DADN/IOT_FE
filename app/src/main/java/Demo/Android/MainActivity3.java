@@ -86,7 +86,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
                         break;
                     case ID_SETTING:
                         name = "setting";
-                        moveToWorkingActivity();
+                        gotoWorkingActivity();
                         break;
                     default:
                         name="";
@@ -126,7 +126,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("Type", "RequestDeviceControl");
-                    jsonObject.put("Device", "Light");
+                    jsonObject.put("Device", "Den");
                     jsonObject.put("Value", lightDeviceValue);
                     sendMessage(jsonObject);
                 } catch (JSONException e) {
@@ -163,7 +163,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("Type", "RequestDeviceControl");
-                    jsonObject.put("Device", "Fan");
+                    jsonObject.put("Device", "Quat");
                     jsonObject.put("Value", pval);
                     sendMessage(jsonObject);
                 } catch (JSONException e) {
@@ -182,7 +182,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
         btnWorking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                moveToWorkingActivity();
+                gotoWorkingActivity();
             }
         });
 //        tempgraph.setOnClickListener(new View.OnClickListener() {
@@ -211,12 +211,6 @@ public class MainActivity3 extends AppCompatActivityExtended {
     }
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        webSocketManager.closeSocket();
-        finish();
-    }
-    public void moveToWorkingActivity(){
-        Intent intent = new Intent(this, WorkingActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
