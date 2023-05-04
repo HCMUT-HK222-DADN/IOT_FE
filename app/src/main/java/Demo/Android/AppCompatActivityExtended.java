@@ -20,4 +20,6 @@ public class AppCompatActivityExtended extends AppCompatActivity {
     public void updateAssignDevice(JSONObject jsonObject) {}
     public void login(JSONObject jsonObject) {}
     public void deviceControl(JSONObject jsonObject) {}
+    public void deviceInit(JSONObject jsonObject) {}
+    public void deviceControlAuto(JSONObject jsonObject) {}
 }

@@ -13,7 +13,7 @@ import okio.ByteString;
 public class WebSocketManager extends WebSocketListener {
     private WebSocket webSocket;
     private AppCompatActivityExtended activity;
-    private final String SOCKET_URL = "ws://10.230.156.125:8000/ws/my_view/";
+    private final String SOCKET_URL = "ws://192.168.1.97:8000/ws/my_view/";
 //    private final String SOCKET_URL = "ws://192.168.1.106:8000";
     // ----------------------------------- Init Function
     public WebSocketManager(AppCompatActivityExtended activity) {
@@ -102,6 +102,14 @@ public class WebSocketManager extends WebSocketListener {
                 case "DeviceControl":
                     Log.w("WebSocket", "DeviceControl Received");
                     this.activity.deviceControl(jsonObject);
+                    break;
+                case "DeviceInit":
+                    Log.w("WebSocket", "DeviceInit Received");
+                    this.activity.deviceInit(jsonObject);
+                    break;
+                case "RequestDeviceControlAuto":
+                    Log.w("WebSocket", "RequestDeviceControlAuto Received");
+                    this.activity.deviceControlAuto(jsonObject);
                     break;
                 default: break;
             }
