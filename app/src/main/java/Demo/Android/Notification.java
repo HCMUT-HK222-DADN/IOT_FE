@@ -12,12 +12,19 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Notification extends AppCompatActivityExtended {
     private WebSocketManager webSocketManager;
@@ -28,6 +35,12 @@ public class Notification extends AppCompatActivityExtended {
     private final int ID_ACCOUNT = 2;
     private final int ID_NOTE = 3;
     private final int ID_SETTING = 4;
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+
+    List<NoteData> NoteList;
+    NoteAdapter selectedItem;
+    private int selectedPosition;
+    NoteAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +97,13 @@ public class Notification extends AppCompatActivityExtended {
                 sendNotification(Notification.this,"Warning Temperature Overload","100*c");
             }
         });
+        ListView list = (ListView) findViewById(R.id.listViewNote);
+
+        NoteList = new ArrayList<>();
+        NoteList.add(new NoteData("Temperature", 100, getToday()));
+        adapter = new NoteAdapter(this, NoteList);
+        list.setAdapter(adapter);
+
     }
     public void sendNotification(Context context, String title, String content) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -111,6 +131,14 @@ public class Notification extends AppCompatActivityExtended {
         if(notificationManager!=null)
             notificationManager.notify(getNotificationId(), builder.build());
 
+    }
+    public String getToday(){
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH);
+        month = month + 1 ;
+        return String.valueOf(year) + "/" + String.valueOf(day) +"/"+String.valueOf(month);
     }
     public int getNotificationId(){
         return (int) new Date().getTime();
