@@ -7,8 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONObject;
 
 public class AppCompatActivityExtended extends AppCompatActivity {
-    protected int userID;
+    static protected int userID;
+    static protected int notiNum;
     public void updateSensorValue(JSONObject jsonObject) {}
+    public void updateHumiValue(JSONObject jsonObject) {}
+    public void updateLightValue(JSONObject jsonObject) {}
+    public void updateTempValue(JSONObject jsonObject) {}
+    public void updateMotionValue(JSONObject jsonObject) {}
     public void updateDeviceScheduleList(JSONObject jsonObject) {}
     public void updateWorkingScheduleList(JSONObject jsonObject) {}
     public void updateServerStatus(String noti) {}
