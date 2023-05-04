@@ -65,7 +65,7 @@ public class WorkingActivity extends AppCompatActivityExtended {
             @Override
             public void onClick(View view) {
                 Log.w("WorkingActivity", "workingSchedule botton cliked");
-                gotoWorkingSchedule();
+                gotoWorkingScheduleActivity();
             }
         });
         deviceschedule.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +100,7 @@ public class WorkingActivity extends AppCompatActivityExtended {
         webSocketManager.closeSocket();
         finish();
     }
-    public void gotoWorkingSchedule() {
+    public void gotoWorkingScheduleActivity() {
         Log.w("WorkingActivity", "in function gotoWorkingSchedule");
         Intent intent = new Intent(this, WorkingScheduleActivity.class);
         startActivity(intent);

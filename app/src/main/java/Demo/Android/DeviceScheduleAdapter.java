@@ -22,7 +22,6 @@ public class DeviceScheduleAdapter extends ArrayAdapter<DeviceScheduleData> {
         this.mContext = context;
         this.mDataList = dataList;
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {

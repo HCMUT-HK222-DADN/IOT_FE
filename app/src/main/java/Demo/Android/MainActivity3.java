@@ -185,24 +185,6 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 gotoWorkingActivity();
             }
         });
-//        tempgraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                TempGraph();
-//            }
-//        });
-//        humigraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                HumiGraph();
-//            }
-//        });
-//        lightgraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                LightGraph();
-//            }
-//        });
     }
 
     //  ---------------- Addition Method
@@ -221,18 +203,6 @@ public class MainActivity3 extends AppCompatActivityExtended {
         webSocketManager.closeSocket();
         finish();
     }
-//    public void TempGraph() {
-//        Intent intent = new Intent(this, TempGraph.class);
-//        startActivity(intent);
-//    }
-//    public void HumiGraph() {
-//        Intent intent = new Intent(this, HumiGraph.class);
-//        startActivity(intent);
-//    }
-//    public void LightGraph() {
-//        Intent intent = new Intent(this, Light_graph.class);
-//        startActivity(intent);
-//    }
     public void initSensorValue() {
         this.webSocketManager.sendMessage("RequestUpdateSensor");
     }
@@ -246,14 +216,22 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 String humiValue = jsonObject.optString("Humi");
                 String lightValue = jsonObject.optString("Light");
                 int motionValue = jsonObject.optInt("Motion");
-                txtTemp.setText(tempValue);
-                txtHumi.setText(humiValue);
-                txtLight.setText(lightValue);
+                txtTemp.setText(tempValue + "°C");
+                txtHumi.setText(humiValue + "%");
+                txtLight.setText(lightValue + "lux");
                 if (motionValue == 1) {
                     motion.setText("Detected");
                 } else {
                     motion.setText("None");
                 }
+            }
+        });
+    }
+    public void deviceControl(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
             }
         });
     }
