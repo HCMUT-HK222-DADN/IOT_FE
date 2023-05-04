@@ -67,6 +67,22 @@ public class WebSocketManager extends WebSocketListener {
                     Log.w("WebSocket", "UpdateSensor Received");
                     this.activity.updateSensorValue(jsonObject);
                     break;
+                case "UpdateHumiSensor":
+                    Log.w("WebSocket", "UpdateHumiSensor");
+                    this.activity.updateHumiValue(jsonObject);
+                    break;
+                case "UpdateLightSensor":
+                    Log.w("WebSocket", "UpdateLightSensor");
+                    this.activity.updateLightValue(jsonObject);
+                    break;
+                case "UpdateTempSensor":
+                    Log.w("WebSocket", "UpdateTempSensor");
+                    this.activity.updateTempValue(jsonObject);
+                    break;
+                case "UpdateMotionSensor":
+                    Log.w("WebSocket", "UpdateMotionSensor");
+                    this.activity.updateMotionValue(jsonObject);
+                    break;
                 case "DeviceTimerSchedule":
                     Log.w("WebSocket", "DeviceTimerSchedule Received");
                     this.activity.updateDeviceScheduleList(jsonObject);
