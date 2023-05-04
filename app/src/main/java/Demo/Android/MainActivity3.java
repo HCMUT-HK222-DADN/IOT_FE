@@ -84,6 +84,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
                         break;
                     case ID_NOTE:
                         name = "notification";
+
                         break;
                     case ID_SETTING:
                         name = "setting";

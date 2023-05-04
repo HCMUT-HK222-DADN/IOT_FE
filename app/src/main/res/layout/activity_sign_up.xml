@@ -4,90 +4,116 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".Sign_Up"
     android:background="@drawable/after_noon"
     android:orientation="vertical"
     >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        >
-    </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="50dp"
         android:gravity="center"
-        android:text="Smart Home IoT"
+        android:text="SIGN UP"
         android:textColor="#660000"
         android:textSize="35dp"
         android:textStyle="bold"
 
         />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="170dp"
         android:layout_weight="8"
-        android:orientation="vertical"
+        android:orientation="vertical">
 
-        >
         <EditText
+            android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id ="@+id/username"
             android:layout_below="@id/username"
-            android:hint="Username"
-            android:textSize="20dp"
-            android:radius="20dp"
             android:layout_margin="15dp"
-            android:padding="25dp"
             android:background="#FFCC66"
             android:drawableLeft="@drawable/baseline_person_outline_24"
             android:drawablePadding="20dp"
+            android:hint="Username"
             android:inputType="text"
-            />
+            android:padding="25dp"
+            android:radius="20dp"
+            android:textSize="20dp" />
+
         <EditText
+            android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id ="@+id/password"
             android:layout_below="@id/password"
-            android:inputType="textPassword"
-            android:hint="Password"
-            android:textSize="20dp"
-            android:radius="20dp"
             android:layout_margin="15dp"
-            android:padding="25dp"
             android:background="#FFCC66"
             android:drawableLeft="@drawable/baseline_key_24"
             android:drawablePadding="20dp"
-            />
-        <TextView
-            android:id="@+id/SignUpPage"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="25dp"
+            android:radius="20dp"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/confirmpassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/password"
-            android:textStyle="bold"
+            android:layout_margin="15dp"
+            android:background="#FFCC66"
+            android:drawableLeft="@drawable/baseline_key_24"
             android:drawablePadding="20dp"
-            android:layout_marginLeft="20dp"
-            android:text="Sign Up!"
-            android:textColor="#CC0033"
+            android:hint="Confirm password"
+            android:inputType="textPassword"
+            android:padding="25dp"
+            android:radius="20dp"
             android:textSize="20dp" />
-        <Button
-            android:id="@+id/Button_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="80dp"
-            android:background="@drawable/custome_button"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:text="Login">
 
-        </Button>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="5">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
 
+            <Button
+                android:id="@+id/Return_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custome_button"
+                android:text="Return"
+                android:textSize="20dp"
+                android:textStyle="bold">
+
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/Signup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/custome_button"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="Sign up">
+
+            </Button>
+        </LinearLayout>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
