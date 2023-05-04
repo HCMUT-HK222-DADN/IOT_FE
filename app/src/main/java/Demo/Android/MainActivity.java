@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivityExtended  {
     private WebSocketManager webSocketManager;
     private Button Login_button;
-    private TextView serverStatus, username, password;
+    private TextView serverStatus, username, password,Signup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivityExtended  {
         password.setText("");
         Login_button = (Button) findViewById(R.id.Button_login);
         serverStatus = findViewById(R.id.serverStatus);
-
+        Signup =  findViewById(R.id.SignUpPage);
         // ---------------------------- Create new websocket
 
 
@@ -57,6 +57,12 @@ public class MainActivity extends AppCompatActivityExtended  {
                         throw new RuntimeException(e);
                     }
                 }
+            }
+        });
+        Signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SignUpPage();
             }
         });
     }
@@ -86,5 +92,11 @@ public class MainActivity extends AppCompatActivityExtended  {
                 serverStatus.setText(noti);
             }
         });
+    }
+    public void SignUpPage() {
+        Intent intent = new Intent(this, Sign_Up.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
     }
 }
