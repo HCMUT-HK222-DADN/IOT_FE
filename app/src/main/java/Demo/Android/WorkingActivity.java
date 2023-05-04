@@ -217,9 +217,9 @@ public class WorkingActivity extends AppCompatActivityExtended {
                 String humiValue = jsonObject.optString("Humi");
                 String lightValue = jsonObject.optString("Light");
                 int motionValue = jsonObject.optInt("Motion");
-                txtTemp.setText(tempValue);
-                txtHumi.setText(humiValue);
-                txtLight.setText(lightValue);
+                txtTemp.setText(tempValue + "°C");
+                txtHumi.setText(humiValue + "%");
+                txtLight.setText(lightValue + "lux");
                 if (motionValue == 1) {
                     motion.setText("Detected");
                 } else {

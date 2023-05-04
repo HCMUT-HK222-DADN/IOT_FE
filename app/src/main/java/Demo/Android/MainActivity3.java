@@ -17,9 +17,12 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity3 extends AppCompatActivityExtended {
     TextView txtTemp,txtHumi,txtLight,tView,motion,gate;
@@ -58,6 +61,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
 
         // ---------------- Init 4 sensor value
         this.initSensorValue();
+        this.initDeviceValue();
 
         // ---------------- Set up Bottom Bar
         MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
@@ -218,6 +222,9 @@ public class MainActivity3 extends AppCompatActivityExtended {
     public void initSensorValue() {
         this.webSocketManager.sendMessage("RequestUpdateSensor");
     }
+    public void initDeviceValue() {
+        this.webSocketManager.sendMessage("RequestDeviceStatus");
+    }
     @Override
     public void updateSensorValue(JSONObject jsonObject) {
         runOnUiThread(new Runnable() {
@@ -283,23 +290,71 @@ public class MainActivity3 extends AppCompatActivityExtended {
             }
         });
     }
+    public void deviceInit(JSONObject jsonObject) {
+        JSONArray jsonArray;
+        List<JSONObject> jsonObjectList = new ArrayList<>();
+        try {
+            jsonArray = jsonObject.getJSONArray("Data");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                jsonObjectList.add(jsonArray.getJSONObject(i));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < jsonObjectList.size(); i++) {
+                    String device = jsonObjectList.get(i).optString("Device");
+                    int value = jsonObjectList.get(i).optInt("Value");
+                    if (device.equals("Den")) {
+                        if (value == 1) {
+                            btnLight.setOn(true);
+                        } else if (value == 0) {
+                            btnLight.setOn(false);
+                        }
+                    } else if (device.equals("Quat")) {
+                        sBar.setProgress(value);
+                    }
+                }
+            }
+        });
+    }
     public void deviceControl(JSONObject jsonObject) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 String device = jsonObject.optString("Device");
+                Log.w("MainActivity3", "Device Type: " + device);
                 int value = jsonObject.optInt("Value");
-                if (device == "Den") {
+                Log.w("MainActivity3", "Value: " + Integer.toString(value));
+                if (device.equals("Den")) {
                     if (value == 1) {
                         btnLight.setOn(true);
                     } else if (value == 0) {
                         btnLight.setOn(false);
                     }
-                } else if (device == "Quat") {
+                } else if (device.equals("Quat")) {
                     sBar.setProgress(value);
                 }
             }
         });
+    }
+    public void deviceControlAuto(JSONObject jsonObject) {
+        deviceControl(jsonObject);
+        String device = jsonObject.optString("Device");
+        int value = jsonObject.optInt("Value");
+        JSONObject jsonObjectNew = new JSONObject();
+        try {
+            jsonObjectNew.put("Type", "RequestDeviceControl");
+            jsonObjectNew.put("Device", device);
+            jsonObjectNew.put("Value", value);
+            Log.w("MainActivity3", "Device type to be sent: " + device);
+            Log.w("MainActivity3", "Value to be sent: " + Integer.toString(value));
+            sendMessage(jsonObjectNew);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void gotoMainActivity3() {
         Intent intent = new Intent(this, MainActivity3.class);
