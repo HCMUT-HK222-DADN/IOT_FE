@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 
 public class WorkingActivity extends AppCompatActivityExtended {
     TextView txtTemp, txtHumi, txtLight, motion,AssignSession;
-    Button logout, workingschedule, deviceschedule, deviceassign, home;
+    Button logout, workingschedule, deviceschedule, deviceassign, home, workingSession;
     private WebSocketManager webSocketManager;
 
     @Override
@@ -26,14 +26,17 @@ public class WorkingActivity extends AppCompatActivityExtended {
         // ---------------- Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_working);
+        Log.w("WorkingActivity", "into WorkingActivity");
+
         // ---------------- Create object to handle button
         motion = findViewById(R.id.motiondetect);
         txtTemp = findViewById(R.id.Temperature);
         txtHumi = findViewById(R.id.Humidity);
         txtLight = findViewById(R.id.light);
         AssignSession = findViewById(R.id.AssignSession);
-        logout = (Button) findViewById(R.id.logout);
+        logout = findViewById(R.id.logout);
         workingschedule = findViewById(R.id.workingschedule);
+        workingSession = findViewById(R.id.workingSession);
         deviceschedule = findViewById(R.id.deviceschedule);
         deviceassign = findViewById(R.id.deviceassign);
         home = findViewById(R.id.home_button);
@@ -61,7 +64,8 @@ public class WorkingActivity extends AppCompatActivityExtended {
         workingschedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoWorkingSchedule();
+                Log.w("WorkingActivity", "workingSchedule botton cliked");
+                gotoWorkingScheduleActivity();
             }
         });
         deviceschedule.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +85,14 @@ public class WorkingActivity extends AppCompatActivityExtended {
             public void onClick(View view) {
                 gotoSessionWorkingSchedule();
             }
-        });    }
+        });
+        workingSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoWorkingSessionActivity();
+            }
+        });
+    }
     //  ---------------- Addition Method
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -89,7 +100,8 @@ public class WorkingActivity extends AppCompatActivityExtended {
         webSocketManager.closeSocket();
         finish();
     }
-    public void gotoWorkingSchedule() {
+    public void gotoWorkingScheduleActivity() {
+        Log.w("WorkingActivity", "in function gotoWorkingSchedule");
         Intent intent = new Intent(this, WorkingScheduleActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
@@ -115,6 +127,12 @@ public class WorkingActivity extends AppCompatActivityExtended {
     }
     public void gotoSessionWorkingSchedule() {
         Intent intent = new Intent(this, AssignSession.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoWorkingSessionActivity() {
+        Intent intent = new Intent(this, WorkingSessionActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();

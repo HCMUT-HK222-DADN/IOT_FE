@@ -33,11 +33,10 @@ import java.util.Date;
 import java.util.Locale;
 
 public class AssignDevice extends AppCompatActivityExtended  {
-    Button timeset, dateset, logout, set;
+    Button timeset, dateset, logout, set, suggestion, b10min, b15min, b20min;
     private WebSocketManager webSocketManager;
     private DatePickerDialog datePickerDialog;
-    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    String[] itemDevice = {"Light", "Fan"};
+    String[] itemDevice = {"Den", "Quat"};
     String[] ValueFan = {"0", "20", "40", "60", "80", "100"};
     String[] ValueButton = {"On", "Off"};
     String[] valueDevice = {};
@@ -79,16 +78,16 @@ public class AssignDevice extends AppCompatActivityExtended  {
         dateset  = findViewById(R.id.DateSetup);
         timeset  = findViewById(R.id.TimeSetup);
         long instance = new Date().getTime();
-        TextView suggestion = (TextView) findViewById(R.id.suggestion);
+        suggestion = (Button) findViewById(R.id.suggestion);
+        b10min = (Button) findViewById(R.id.b10min);
+        b15min = (Button) findViewById(R.id.b15min);
+        b20min = (Button) findViewById(R.id.b20min);
         LinearLayout show_hide = (LinearLayout) findViewById(R.id.show_hide);
         Button back = (Button) findViewById(R.id.back);
 
-        TextView restView = (TextView) findViewById(R.id.resttime);
         TextView rest = (TextView) findViewById(R.id.rest);
 
-        Button b10min = (Button) findViewById(R.id.b10min);
-        Button b15min = (Button) findViewById(R.id.b15min);
-        Button b20min = (Button) findViewById(R.id.b20min);
+
 
         logout = (Button) findViewById(R.id.logout);
         initDatePicker();
@@ -129,7 +128,6 @@ public class AssignDevice extends AppCompatActivityExtended  {
                         break;
                     case ID_NOTE:
                         name = "notification";
-                        backtoWorkmain();
                         break;
                     case ID_SETTING:
                         name = "setting";
@@ -188,56 +186,38 @@ public class AssignDevice extends AppCompatActivityExtended  {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
-        // Set up Show/Hide Rest Interval
         RestTimeSet = 300;
         suggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int hideflag = show_hide.getVisibility();
-                if(hideflag == View.VISIBLE){
-                    show_hide.setVisibility(View.GONE);
-                    RestTimeSet = 300;
-                    int min = RestTimeSet/60;
-                    int second = RestTimeSet%60;
-                    restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                    rest.setText("Rest Time (Default):");
-                    suggestion.setText("Click here to view more Suggestion");
-
-                }
-                else {
-                    suggestion.setText("Close suggestion");
-                    show_hide.setVisibility(View.VISIBLE);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestDeviceTimerSuggest");
+                    jsonObject.put("UserID", 1);
+                    jsonObject.put("Device", selectedDevice);
+                    jsonObject.put("Value", Integer.parseInt(selectedValue));
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
         b10min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RestTimeSet = 600;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
+                setTimeset(b10min);
             }
         });
         b15min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RestTimeSet = 900;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
+                setTimeset(b15min);
             }
         });
         b20min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RestTimeSet = 1200;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
+                setTimeset(b20min);
             }
         });
         set.setOnClickListener(new View.OnClickListener() {
@@ -250,6 +230,7 @@ public class AssignDevice extends AppCompatActivityExtended  {
                     jsonObject.put("Device", selectedDevice);
                     jsonObject.put("Value", Integer.parseInt(selectedValue));
                     jsonObject.put("TimeStart", selectedDatetime);
+                    jsonObject.put("UserID", 1);
                     sendMessage(jsonObject);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
@@ -311,7 +292,6 @@ public class AssignDevice extends AppCompatActivityExtended  {
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.DAY_OF_MONTH);
         int style = AlertDialog.THEME_HOLO_LIGHT;
-
         datePickerDialog = new DatePickerDialog(this,style,dateSetListener,year,month,day);
     }
     private String makeDateString(int day, int month, int year) {
@@ -341,8 +321,49 @@ public class AssignDevice extends AppCompatActivityExtended  {
     public void openDatePicker(View view){
         datePickerDialog.show();
     }
+    public void setTimeset(Button bmin) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String timeText = (String) bmin.getText();
+                timeset.setText(timeText);
+                int hour = Integer.parseInt(timeText.substring(0,2));
+                int minute = Integer.parseInt(timeText.substring(3));
+                selectedTime = makeSelectedTime(hour, minute);
+            }
+        });
+    }
     public void sendMessage(JSONObject jsonObject) {
         this.webSocketManager.sendMessage(jsonObject);
+    }
+    public void updateAssignDevice(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String time1, time2, time3;
+                if (jsonObject.has("time1")) {
+                    time1 = jsonObject.optString("time1");
+                } else {
+                    time1 = "00:00";
+                }
+                if (jsonObject.has("time2")) {
+                    time2 = jsonObject.optString("time2");
+                } else {
+                    time2 = "00:00";
+                }
+                if (jsonObject.has("time3")) {
+                    time3 = jsonObject.optString("time3");
+                } else {
+                    time3 = "00:00";
+                }
+                time1 = time1.substring(0,5);
+                time2 = time2.substring(0,5);
+                time3 = time3.substring(0,5);
+                b10min.setText(time1);
+                b15min.setText(time2);
+                b20min.setText(time3);
+            }
+        });
     }
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);

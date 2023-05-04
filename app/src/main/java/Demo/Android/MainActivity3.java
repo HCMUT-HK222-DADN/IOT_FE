@@ -86,7 +86,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
                         break;
                     case ID_SETTING:
                         name = "setting";
-                        moveToWorkingActivity();
+                        gotoWorkingActivity();
                         break;
                     default:
                         name="";
@@ -126,7 +126,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("Type", "RequestDeviceControl");
-                    jsonObject.put("Device", "Light");
+                    jsonObject.put("Device", "Den");
                     jsonObject.put("Value", lightDeviceValue);
                     sendMessage(jsonObject);
                 } catch (JSONException e) {
@@ -163,7 +163,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("Type", "RequestDeviceControl");
-                    jsonObject.put("Device", "Fan");
+                    jsonObject.put("Device", "Quat");
                     jsonObject.put("Value", pval);
                     sendMessage(jsonObject);
                 } catch (JSONException e) {
@@ -182,27 +182,9 @@ public class MainActivity3 extends AppCompatActivityExtended {
         btnWorking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                moveToWorkingActivity();
+                gotoWorkingActivity();
             }
         });
-//        tempgraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                TempGraph();
-//            }
-//        });
-//        humigraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                HumiGraph();
-//            }
-//        });
-//        lightgraph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                LightGraph();
-//            }
-//        });
     }
 
     //  ---------------- Addition Method
@@ -215,30 +197,12 @@ public class MainActivity3 extends AppCompatActivityExtended {
         webSocketManager.closeSocket();
         finish();
     }
-    public void moveToWorkingActivity(){
-        Intent intent = new Intent(this, WorkingActivity.class);
-        startActivity(intent);
-        webSocketManager.closeSocket();
-        finish();
-    }
     public void moveToSetting(){
         Intent intent = new Intent(this, Setting.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
     }
-//    public void TempGraph() {
-//        Intent intent = new Intent(this, TempGraph.class);
-//        startActivity(intent);
-//    }
-//    public void HumiGraph() {
-//        Intent intent = new Intent(this, HumiGraph.class);
-//        startActivity(intent);
-//    }
-//    public void LightGraph() {
-//        Intent intent = new Intent(this, Light_graph.class);
-//        startActivity(intent);
-//    }
     public void initSensorValue() {
         this.webSocketManager.sendMessage("RequestUpdateSensor");
     }
@@ -252,14 +216,22 @@ public class MainActivity3 extends AppCompatActivityExtended {
                 String humiValue = jsonObject.optString("Humi");
                 String lightValue = jsonObject.optString("Light");
                 int motionValue = jsonObject.optInt("Motion");
-                txtTemp.setText(tempValue);
-                txtHumi.setText(humiValue);
-                txtLight.setText(lightValue);
+                txtTemp.setText(tempValue + "°C");
+                txtHumi.setText(humiValue + "%");
+                txtLight.setText(lightValue + "lux");
                 if (motionValue == 1) {
                     motion.setText("Detected");
                 } else {
                     motion.setText("None");
                 }
+            }
+        });
+    }
+    public void deviceControl(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
             }
         });
     }

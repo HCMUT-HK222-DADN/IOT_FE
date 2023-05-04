@@ -26,13 +26,19 @@ import java.util.Date;
 import java.util.Locale;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class AssignSession extends AppCompatActivityExtended  {
-    Button timeset,dateset,logout;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+public class AssignSession extends AppCompatActivityExtended  {
+    Button dateset, logout, set;
+    Button TimeStartSetup, TimeEndSetup;
+    TextView resttime, worktime;
     private WebSocketManager webSocketManager;
     private DatePickerDialog datePickerDialog;
-    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    int hour,minute;
+    String selectedDate;
+    String selectedDatetimeStart, selectedTimeStart;
+    String selectedDatetimeEnd, selectedTimeEnd;
+    String selectedTimeWorkInter, selectedTimeRestInter;
     private final int ID_HOME = 1;
     private final int ID_ACCOUNT = 2;
     private final int ID_NOTE = 3;
@@ -40,88 +46,33 @@ public class AssignSession extends AppCompatActivityExtended  {
     private int RestTimeSet = 300;//Count by seconds
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        // ---------------- Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_session);
 
-        //Init web socket??
+        // ----------------  object to handle button
+        set = findViewById(R.id.set);
+
+        // ---------------- Create Websocket
         webSocketManager = new WebSocketManager(AssignSession.this);
         webSocketManager.start();
+
+        // ---------------- Init view
         dateset  = findViewById(R.id.DateSetup);
-        timeset  = findViewById(R.id.TimeSetup);
+        TimeStartSetup  = findViewById(R.id.TimeStartSetup);
+        TimeEndSetup = findViewById(R.id.TimeEndSetup);
         long instance = new Date().getTime();
-        TextView suggestion = (TextView) findViewById(R.id.suggestion);
-        LinearLayout show_hide = (LinearLayout) findViewById(R.id.show_hide);
+
         Button back = (Button) findViewById(R.id.back);
 
-        TextView restView = (TextView) findViewById(R.id.resttime);
-        TextView rest = (TextView) findViewById(R.id.rest);
-
-        Button b10min = (Button) findViewById(R.id.b10min);
-        Button b15min = (Button) findViewById(R.id.b15min);
-        Button b20min = (Button) findViewById(R.id.b20min);
+        resttime = findViewById(R.id.resttime);
+        worktime = findViewById(R.id.worktime);
 
         logout = (Button) findViewById(R.id.logout);
         initDatePicker();
         dateset.setText(getToday());
 
-
-        // Set up Show/Hide Rest Interval
-        RestTimeSet = 300;
-        suggestion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int hideflag = show_hide.getVisibility();
-
-                if(hideflag == View.VISIBLE){
-                    show_hide.setVisibility(View.GONE);
-                    RestTimeSet = 300;
-                    int min = RestTimeSet/60;
-                    int second = RestTimeSet%60;
-                    restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                    rest.setText("Rest Time (Default):");
-                    suggestion.setText("Click here to view more Suggestion");
-
-                }
-                else {
-                    suggestion.setText("Close suggestion");
-                    show_hide.setVisibility(View.VISIBLE);
-
-
-                }
-            }
-
-        });
-        b10min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RestTimeSet = 600;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
-            }
-        });
-        b15min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RestTimeSet = 900;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
-            }
-        });
-        b20min.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RestTimeSet = 1200;
-                int min = RestTimeSet/60;
-                int second = RestTimeSet%60;
-                restView.setText(String.valueOf(min)+":"+String.valueOf(second)+"0");
-                rest.setText("Rest Time (Chosen from suggest):");
-            }
-        });
-        //Set up Bottom Bar
+        // ---------------- Set up Bottom Bar
         MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_HOME,R.drawable.baseline_home_40));
         bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
@@ -131,6 +82,16 @@ public class AssignSession extends AppCompatActivityExtended  {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item){
                 Toast.makeText(AssignSession.this,"Click item : "+item.getId(),Toast.LENGTH_SHORT).show();
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
@@ -140,19 +101,15 @@ public class AssignSession extends AppCompatActivityExtended  {
                 switch (item.getId()){
                     case ID_HOME:
                         name = "home";
-
                         break;
                     case ID_ACCOUNT:
                         name = "account";
-
                         break;
                     case ID_NOTE:
                         name = "notification";
-                        backtoWorkmain();
                         break;
                     case ID_SETTING:
                         name = "setting";
-
                         break;
                     default:
                         name="Current";
@@ -161,19 +118,53 @@ public class AssignSession extends AppCompatActivityExtended  {
                 }
             }
         });
-
+        bottomNavigation.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
+            @Override
+            public void onReselectItem(MeowBottomNavigation.Model item) {
+                switch (item.getId()){
+                    case ID_HOME:
+                        gotoMainActivity3();
+                        break;
+                    case ID_SETTING:
+                        gotoWorkingActivity();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
         bottomNavigation.setCount(ID_NOTE,"4");
         bottomNavigation.show(ID_SETTING,true);
 
-        //Logout
+
+        // ---------------- Init listener
+        set.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedDatetimeStart = selectedDate + " " + selectedTimeStart;
+                selectedDatetimeEnd = selectedDate + " " + selectedTimeEnd;
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestScheduleBook");
+                    jsonObject.put("UserID", 1);
+                    jsonObject.put("time_start", selectedDatetimeStart);
+                    jsonObject.put("time_end", selectedDatetimeEnd);
+                    jsonObject.put("work_inter", selectedTimeWorkInter);
+                    jsonObject.put("rest_inter", selectedTimeRestInter);
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                current();
+            }
+        });
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LogOut();
             }
         });
-        //back to mainactivity
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,6 +173,7 @@ public class AssignSession extends AppCompatActivityExtended  {
         });
     }
 
+    // ---------------- Addition Method
     public String getToday(){
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
@@ -190,28 +182,66 @@ public class AssignSession extends AppCompatActivityExtended  {
         month = month + 1 ;
         return makeDateString(day,month,year);
     }
-    public  void popTimePicker(View view){
+    public void popStartTimePicker(View view){
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectHour, int selectMin) {
-                hour = selectHour;
-                minute = selectMin;
-                timeset.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                TimeStartSetup.setText(String.format(Locale.getDefault(), "%02d:%02d", selectHour, selectMin));
+                selectedTimeStart = makeSelectedTime(selectHour, selectMin);
             }
         };
         int style = AlertDialog.THEME_HOLO_LIGHT;
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,style, onTimeSetListener,hour,minute,true);
-        timePickerDialog.setTitle("Time Setup");
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,style, onTimeSetListener,0,0,true);
+        timePickerDialog.setTitle("Time Start");
         timePickerDialog.show();
-
     }
-    public  void initDatePicker(){
-        DatePickerDialog.OnDateSetListener dateSetListener =new DatePickerDialog.OnDateSetListener() {
+    public void popEndTimePicker(View view){
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectHour, int selectMin) {
+                TimeEndSetup.setText(String.format(Locale.getDefault(), "%02d:%02d", selectHour, selectMin));
+                selectedTimeEnd = makeSelectedTime(selectHour, selectMin);
+            }
+        };
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,style, onTimeSetListener,0,0,true);
+        timePickerDialog.setTitle("Time Start");
+        timePickerDialog.show();
+    }
+    public void popWorkInterPicker(View view){
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectHour, int selectMin) {
+                worktime.setText(String.format(Locale.getDefault(), "%02d:%02d", selectHour, selectMin));
+                selectedTimeWorkInter = makeSelectedTime(selectHour, selectMin);
+            }
+        };
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,style, onTimeSetListener,0,0,true);
+        timePickerDialog.setTitle("Work Interval");
+        timePickerDialog.show();
+    }
+    public void popRestInterPicker(View view){
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectHour, int selectMin) {
+                resttime.setText(String.format(Locale.getDefault(), "%02d:%02d", selectHour, selectMin));
+                selectedTimeRestInter = makeSelectedTime(selectHour, selectMin);
+            }
+        };
+        int style = AlertDialog.THEME_HOLO_LIGHT;
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,style, onTimeSetListener,0,0,true);
+        timePickerDialog.setTitle("Rest Interval");
+        timePickerDialog.show();
+    }
+    public void initDatePicker(){
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
                 String date = makeDateString(day,month,year);
                 dateset.setText(date);
+                selectedDate = makeSelectedDate(day, month, year);
             }
         };
         Calendar cal = Calendar.getInstance();
@@ -219,14 +249,17 @@ public class AssignSession extends AppCompatActivityExtended  {
         int day = cal.get(Calendar.DATE);
         int month = cal.get(Calendar.DAY_OF_MONTH);
         int style = AlertDialog.THEME_HOLO_LIGHT;
-
         datePickerDialog = new DatePickerDialog(this,style,dateSetListener,year,month,day);
-
     }
     private String makeDateString(int day,int month,int year){
         return day +" / "+  getMonthFormat(month)+ " / " + year;
     }
-
+    private String makeSelectedDate(int day, int month, int year) {
+        return String.format("%d-%02d-%02d", year, month, day);
+    }
+    private String makeSelectedTime(int hour, int minute) {
+        return String.format("%02d:%02d:%02d", hour, minute, 0);
+    }
     private String getMonthFormat(int month) {
         if(month == 1) return "thg 1";
         if(month == 2) return "thg 2";
@@ -242,9 +275,11 @@ public class AssignSession extends AppCompatActivityExtended  {
         if(month == 12) return "thg 12";
         return "jan";
     }
-
     public void openDatePicker(View view){
         datePickerDialog.show();
+    }
+    public void sendMessage(JSONObject jsonObject) {
+        this.webSocketManager.sendMessage(jsonObject);
     }
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -260,6 +295,18 @@ public class AssignSession extends AppCompatActivityExtended  {
     }
     public void current() {
         Intent intent = new Intent(this, AssignSession.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoMainActivity3() {
+        Intent intent = new Intent(this, MainActivity3.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void gotoWorkingActivity() {
+        Intent intent = new Intent(this, WorkingActivity.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();

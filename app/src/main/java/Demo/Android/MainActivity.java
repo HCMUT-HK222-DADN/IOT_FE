@@ -8,11 +8,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class MainActivity extends AppCompatActivityExtended  {
     private WebSocketManager webSocketManager;
     private Button Login_button;
-    private TextView serverStatus;
+    private TextView serverStatus, username, password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +26,10 @@ public class MainActivity extends AppCompatActivityExtended  {
         webSocketManager.start();
 
         // ---------------------------- Create buttons and views
-        TextView username = (TextView) findViewById(R.id.username);
-        TextView password = (TextView) findViewById(R.id.password);
+        username = (TextView) findViewById(R.id.username);
+        username.setText("");
+        password = (TextView) findViewById(R.id.password);
+        password.setText("");
         Login_button = (Button) findViewById(R.id.Button_login);
         serverStatus = findViewById(R.id.serverStatus);
 
@@ -35,7 +40,23 @@ public class MainActivity extends AppCompatActivityExtended  {
         Login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Loginsuccess();
+                String inputUsername = username.getText().toString();
+                String inputPassword = password.getText().toString();
+                Log.w("MainActivity", "The input Username is:" + inputUsername);
+                Log.w("MainActivity", "The input Password is:" + inputPassword);
+                if (inputUsername.isEmpty() & inputPassword.isEmpty()) {
+                    gotoManActivity3();
+                } else if (!inputUsername.isEmpty() & !inputPassword.isEmpty()) {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("Type", "RequestLogIn");
+                        jsonObject.put("Username", inputUsername);
+                        jsonObject.put("Password", inputPassword);
+                        sendMessage(jsonObject);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         });
     }
@@ -45,7 +66,14 @@ public class MainActivity extends AppCompatActivityExtended  {
     }
 
     // ---------------------------- Additional method
-    public void Loginsuccess() {
+    public void sendMessage(JSONObject jsonObject) {
+        this.webSocketManager.sendMessage(jsonObject);
+    }
+    public void login(JSONObject jsonObject) {
+        this.userID = jsonObject.optInt("UserID");
+        gotoManActivity3();
+    }
+    public void gotoManActivity3() {
         Intent intent = new Intent(this, MainActivity3.class);
         startActivity(intent);
         webSocketManager.closeSocket();
