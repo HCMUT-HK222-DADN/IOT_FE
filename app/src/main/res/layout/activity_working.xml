@@ -325,69 +325,11 @@
         />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width = "match_parent"
-        android:layout_height = "0dp"
-        android:layout_weight = "1"
-        android:orientation="horizontal">
-        <LinearLayout
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
-            android:layout_weight = "1">
 
-            <Button
-                android:id="@+id/home_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawableLeft="@drawable/baseline_home_40"
-                android:gravity="center"
-                android:background="@color/white"
-                android:paddingLeft="30dp"
-                >
-            </Button>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
-            android:layout_weight = "1">
-            <Button
-                android:id="@+id/notification_person"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:drawableLeft="@drawable/baseline_person_24"
-                android:gravity="center"
-                android:paddingLeft="30dp"></Button>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
-            android:layout_weight = "1">
-
-            <Button
-                android:id="@+id/notification_button"
-                android:layout_width="114dp"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:drawableLeft="@drawable/baseline_notifications_24"
-                android:gravity="center"
-                android:paddingLeft="30dp"></Button>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width = "0dp"
-            android:layout_height = "match_parent"
-            android:layout_weight = "1">
-            <Button
-                android:id="@+id/setting_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawableLeft="@drawable/baseline_settings_24"
-                android:gravity="center"
-                android:background="@color/white"
-                android:paddingLeft="30dp"
-                >
-            </Button>
-        </LinearLayout>
-    </LinearLayout>
+        <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Grid"
+            app:menu="@menu/navbar_menu" />
 </LinearLayout>

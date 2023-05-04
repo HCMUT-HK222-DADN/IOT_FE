@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 
 public class MainActivity3 extends AppCompatActivityExtended {
-    TextView txtTemp,txtHumi,txtLight,tView,motion;
+    TextView txtTemp,txtHumi,txtLight,tView,motion,gate;
     SeekBar sBar;
     Button logout, tempgraph, humigraph, lightgraph, btnWorking;
     DayNightSwitch btnLight;
@@ -50,6 +50,7 @@ public class MainActivity3 extends AppCompatActivityExtended {
         humigraph = (Button) findViewById(R.id.humi_button);
         lightgraph = (Button) findViewById(R.id.light_button);
         btnWorking = (Button) findViewById(R.id.working_button);
+        gate = (TextView) findViewById(R.id.gate);
 
         // ---------------- Receive Websocket object
         webSocketManager = new WebSocketManager(MainActivity3.this);
@@ -114,6 +115,12 @@ public class MainActivity3 extends AppCompatActivityExtended {
         bottomNavigation.show(ID_HOME,true);
 
         // ---------------- Set up Listener
+        gate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToGateNumPad();
+            }
+        });
         btnLight.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
@@ -186,7 +193,12 @@ public class MainActivity3 extends AppCompatActivityExtended {
             }
         });
     }
-
+    public void moveToGateNumPad(){
+        Intent intent = new Intent(this, Gate.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
     //  ---------------- Addition Method
     public void sendMessage(JSONObject jsonObject) {
         this.webSocketManager.sendMessage(jsonObject);

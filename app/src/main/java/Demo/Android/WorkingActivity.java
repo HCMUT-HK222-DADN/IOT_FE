@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.github.angads25.toggle.interfaces.OnToggledListener;
 import com.github.angads25.toggle.model.ToggleableView;
 import com.github.angads25.toggle.widget.DayNightSwitch;
@@ -20,7 +23,10 @@ public class WorkingActivity extends AppCompatActivityExtended {
     TextView txtTemp, txtHumi, txtLight, motion,AssignSession;
     Button logout, workingschedule, deviceschedule, deviceassign, home, workingSession;
     private WebSocketManager webSocketManager;
-
+    private final int ID_HOME = 1;
+    private final int ID_ACCOUNT = 2;
+    private final int ID_NOTE = 3;
+    private final int ID_SETTING = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // ---------------- Init
@@ -39,7 +45,6 @@ public class WorkingActivity extends AppCompatActivityExtended {
         workingSession = findViewById(R.id.workingSession);
         deviceschedule = findViewById(R.id.deviceschedule);
         deviceassign = findViewById(R.id.deviceassign);
-        home = findViewById(R.id.home_button);
 
         // ---------------- Create Websocket
         webSocketManager = new WebSocketManager(WorkingActivity.this);
@@ -55,12 +60,7 @@ public class WorkingActivity extends AppCompatActivityExtended {
                 LogOut();
             }
         });
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoMainActivity3();
-            }
-        });
+
         workingschedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,6 +92,49 @@ public class WorkingActivity extends AppCompatActivityExtended {
                 gotoWorkingSessionActivity();
             }
         });
+        //NavBar
+        MeowBottomNavigation bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_HOME,R.drawable.baseline_home_40));
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_ACCOUNT,R.drawable.baseline_person_24));
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_NOTE,R.drawable.baseline_notifications_24));
+        bottomNavigation.add(new MeowBottomNavigation.Model(ID_SETTING,R.drawable.baseline_settings_24));
+        bottomNavigation.setOnClickMenuListener(new MeowBottomNavigation.ClickListener(){
+            @Override
+            public void onClickItem(MeowBottomNavigation.Model item){
+                Toast.makeText(WorkingActivity.this,"Click item : "+item.getId(),Toast.LENGTH_SHORT).show();
+            }
+        });
+        bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
+            @Override
+            public void onShowItem(MeowBottomNavigation.Model item) {
+                String name;
+                switch (item.getId()){
+                    case ID_HOME:
+                        name = "home";
+                        moveToMain3();
+                        break;
+                    case ID_ACCOUNT:
+                        name = "account";
+                        moveToAccount();
+                        break;
+                    case ID_NOTE:
+                        name = "notification";
+                        moveToANotification();
+                        break;
+                    case ID_SETTING:
+                        name = "setting";
+                        moveToSetting();
+                        break;
+                    default:
+                        name="Current";
+                        break;
+                }
+            }
+        });
+
+
+        //Dùng chức năng này phát triển module 2 - Cảnh báo giá trị vượt ngưỡng
+        bottomNavigation.setCount(ID_NOTE,"4");
     }
     //  ---------------- Addition Method
     public void LogOut() {
@@ -133,6 +176,30 @@ public class WorkingActivity extends AppCompatActivityExtended {
     }
     public void gotoWorkingSessionActivity() {
         Intent intent = new Intent(this, WorkingSessionActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public  void moveToMain3(){
+        Intent intent = new Intent(this, MainActivity3.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void moveToSetting(){
+        Intent intent = new Intent(this, Setting.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void moveToAccount(){
+        Intent intent = new Intent(this, Account.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void moveToANotification(){
+        Intent intent = new Intent(this, Notification.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
