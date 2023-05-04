@@ -32,6 +32,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+// fdgfd
+
 public class AssignDevice extends AppCompatActivityExtended  {
     Button timeset, dateset, logout, set, suggestion, b10min, b15min, b20min;
     private WebSocketManager webSocketManager;
