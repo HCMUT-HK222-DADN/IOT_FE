@@ -228,4 +228,48 @@ public class WorkingActivity extends AppCompatActivityExtended {
             }
         });
     }
+    public void updateHumiValue(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.w("MainActivity3", "Activity Received JSON File success.");
+                String humiValue = jsonObject.optString("Humi");
+                txtHumi.setText(humiValue + "%");
+            }
+        });
+    }
+    public void updateLightValue(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.w("MainActivity3", "Activity Received JSON File success.");
+                String lightValue = jsonObject.optString("Light");
+                txtLight.setText(lightValue + "lux");
+            }
+        });
+    }
+    public void updateTempValue(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.w("MainActivity3", "Activity Received JSON File success.");
+                String tempValue = jsonObject.optString("Temp");
+                txtTemp.setText(tempValue + "°C");
+            }
+        });
+    }
+    public void updateMotionValue(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.w("MainActivity3", "Activity Received JSON File success.");
+                int motionValue = jsonObject.optInt("Motion");
+                if (motionValue == 1) {
+                    motion.setText("Detected");
+                } else {
+                    motion.setText("None");
+                }
+            }
+        });
+    }
 }
