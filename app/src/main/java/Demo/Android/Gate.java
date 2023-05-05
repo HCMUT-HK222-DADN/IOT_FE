@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Gate extends AppCompatActivityExtended {
     private WebSocketManager webSocketManager;
 
@@ -82,7 +85,22 @@ public class Gate extends AppCompatActivityExtended {
         numdel = findViewById(R.id.numdel);
         numOk = findViewById(R.id.numOk);
         PassPressed = findViewById(R.id.passpressed);
+
         //Press Number
+        numOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("Type", "RequestDeviceControl");
+                    jsonObject.put("Device", "Servo");
+                    jsonObject.put("Value", Pressed);
+                    sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         num0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -171,6 +189,9 @@ public class Gate extends AppCompatActivityExtended {
                 // BE ....
             }
         });
+    }
+    public void sendMessage(JSONObject jsonObject) {
+        this.webSocketManager.sendMessage(jsonObject);
     }
     public void moveToMain3(){
         Intent intent = new Intent(this, MainActivity3.class);
