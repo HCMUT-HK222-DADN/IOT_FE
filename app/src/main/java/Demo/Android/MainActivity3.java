@@ -27,7 +27,7 @@ import java.util.List;
 public class MainActivity3 extends AppCompatActivityExtended {
     TextView txtTemp,txtHumi,txtLight,tView,motion,gate;
     SeekBar sBar;
-    Button logout, tempgraph, humigraph, lightgraph, btnWorking;
+    Button logout, tempdata, humidata, lightdata, btnWorking;
     DayNightSwitch btnLight;
     private WebSocketManager webSocketManager;
     private final int ID_HOME = 1;
@@ -49,9 +49,9 @@ public class MainActivity3 extends AppCompatActivityExtended {
         tView = (TextView) findViewById(R.id.textview1);
         sBar = (SeekBar) findViewById(R.id.seekBar1);
         logout = (Button) findViewById(R.id.logout);
-        tempgraph = (Button) findViewById(R.id.temp_button);
-        humigraph = (Button) findViewById(R.id.humi_button);
-        lightgraph = (Button) findViewById(R.id.light_button);
+        tempdata = (Button) findViewById(R.id.temp_button);
+        humidata = (Button) findViewById(R.id.humi_button);
+        lightdata = (Button) findViewById(R.id.light_button);
         btnWorking = (Button) findViewById(R.id.working_button);
         gate = (TextView) findViewById(R.id.gate);
 
@@ -124,6 +124,24 @@ public class MainActivity3 extends AppCompatActivityExtended {
             @Override
             public void onClick(View view) {
                 moveToGateNumPad();
+            }
+        });
+        humidata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToHumidata();
+            }
+        });
+        tempdata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToTempdata();
+            }
+        });
+        lightdata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToLightdata();
             }
         });
         btnLight.setOnToggledListener(new OnToggledListener() {
@@ -210,6 +228,24 @@ public class MainActivity3 extends AppCompatActivityExtended {
     }
     public void LogOut() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void moveToHumidata(){
+        Intent intent = new Intent(this, History_Humi.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void moveToTempdata(){
+        Intent intent = new Intent(this, History_Temp.class);
+        startActivity(intent);
+        webSocketManager.closeSocket();
+        finish();
+    }
+    public void moveToLightdata(){
+        Intent intent = new Intent(this, History_Light.class);
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
