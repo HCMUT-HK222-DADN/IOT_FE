@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class AppCompatActivityExtended extends AppCompatActivity {
     static protected int userID;
     static protected int notiNum;
+    static protected WorkingScheduleData selectedWorkingScheduleData;
     public void updateSensorValue(JSONObject jsonObject) {}
     public void updateHumiValue(JSONObject jsonObject) {}
     public void updateLightValue(JSONObject jsonObject) {}

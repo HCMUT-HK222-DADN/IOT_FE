@@ -37,7 +37,6 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
         // ---------------- Init
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workingschedule);
-        Log.w("WorkingScheduleActivity", "into WorkingScheduleActivity");
 
         // ---------------- Create object to handle button
         logout = (Button) findViewById(R.id.logout);
@@ -142,6 +141,7 @@ public class WorkingScheduleActivity extends AppCompatActivityExtended {
         startSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                selectedWorkingScheduleData = selectedItem;
                 gotoWorkingSession();
             }
         });
