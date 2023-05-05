@@ -145,7 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:text = "TEMP GRAPH"
+                android:text = "TEMP DATA"
                 ></Button>
             <TextView
                 android:id="@+id/Temperature"
@@ -172,7 +172,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:text = "HUMI GRAPH"
+                android:text = "HUMI DATA"
                 ></Button>
             <TextView
                 android:id="@+id/Humidity"
@@ -196,7 +196,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:text = "LIGHT GRAPH"
+                android:text = "LIGHT DATA"
                 ></Button>
             <TextView
                 android:id="@+id/light"
