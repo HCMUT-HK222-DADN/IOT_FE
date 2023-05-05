@@ -47,6 +47,7 @@
                 android:paddingLeft="30dp"></Button>
         </LinearLayout>
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/flTimer"
         android:layout_width="250dp"
@@ -56,7 +57,8 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.308">
+        app:layout_constraintVertical_bias="0.250">
+
         <ProgressBar
             android:id="@+id/pbTimer"
             android:layout_width="match_parent"
@@ -78,6 +80,7 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/sessionStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -103,51 +106,62 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
+
     </FrameLayout>
 
-    <ImageButton
-        android:id="@+id/btnAdd"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
-        android:background="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/add"
-        app:layout_constraintHorizontal_bias="0.291"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/flTimer" />
-
-    <TextView
-        android:id="@+id/tv_addTime"
-        android:layout_width="63dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="160dp"
-        android:layout_marginBottom="16dp"
-        android:text=""
-        android:textColor="#0000FF"
-        android:textSize="24sp"
-        android:textStyle="bold"
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.57">
 
-    <ImageButton
-        android:id="@+id/ib_reset"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginEnd="88dp"
-        android:layout_marginBottom="200dp"
-        android:background="@color/white"
-        android:scaleType="fitXY"
-        android:src="@drawable/reset"
+        <ImageButton
+            android:id="@+id/btnAdd"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/white"
+            android:scaleType="fitXY"
+            android:src="@drawable/add"
+            android:layout_gravity="left|center"/>
+
+        <ImageButton
+            android:id="@+id/ib_reset"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/white"
+            android:scaleType="fitXY"
+            android:src="@drawable/reset"
+            android:layout_gravity="right|center" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85">
+
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+
+    </FrameLayout>
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnPlayPause"
         android:layout_width="284dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/button_bg"
         android:text="Start"
         android:textColor="@color/white"
@@ -157,5 +171,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"></androidx.appcompat.widget.AppCompatButton>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
