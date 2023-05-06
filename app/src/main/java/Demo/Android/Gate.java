@@ -22,7 +22,7 @@ public class Gate extends AppCompatActivityExtended {
     private final int ID_NOTE = 3;
     private final int ID_SETTING = 4;
     private Button num1,num2,num3,num4,num5,num6,num7,num8,num9,num0,numOk,numdel;
-    TextView PassPressed;
+    TextView PassPressed,statusGate;
     String Pressed = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class Gate extends AppCompatActivityExtended {
                         moveToANotification();
                         break;
                     case ID_SETTING:
-                        moveToSetting();
+                      //  moveToSetting();
 
                         name = "setting";
 
@@ -87,6 +87,7 @@ public class Gate extends AppCompatActivityExtended {
         PassPressed = findViewById(R.id.passpressed);
 
         //Press Number
+
         numOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,14 +183,11 @@ public class Gate extends AppCompatActivityExtended {
                 PassPressed.setText(Pressed);}
             }
         });
+
         /// -----> Sử dụng string Pressed để nhận Password
-        numOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // BE ....
-            }
-        });
+
     }
+
     public void sendMessage(JSONObject jsonObject) {
         this.webSocketManager.sendMessage(jsonObject);
     }
@@ -210,5 +208,20 @@ public class Gate extends AppCompatActivityExtended {
         startActivity(intent);
         webSocketManager.closeSocket();
         finish();
+    }
+    public void updateSensorValue(JSONObject jsonObject) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.w("MainActivity3", "Activity Received JSON File success.");
+                String status = jsonObject.optString("ServoControl");
+
+                if (status.equals("1")) {
+                    statusGate.setText("Opened");
+                } else {
+                    statusGate.setText("Closed");
+                }
+            }
+        });
     }
 }
